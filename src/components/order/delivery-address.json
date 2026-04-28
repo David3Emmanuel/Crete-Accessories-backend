@@ -1,0 +1,29 @@
+{
+  "collectionName": "components_order_delivery_addresses",
+  "info": {
+    "displayName": "Delivery Address",
+    "icon": "map-marker"
+  },
+  "attributes": {
+    "fullName": {
+      "type": "string",
+      "required": true
+    },
+    "phone": {
+      "type": "string",
+      "required": true
+    },
+    "address": {
+      "type": "string",
+      "required": true
+    },
+    "state": {
+      "type": "string",
+      "required": true
+    },
+    "city": {
+      "type": "string",
+      "required": true
+    }
+  }
+}

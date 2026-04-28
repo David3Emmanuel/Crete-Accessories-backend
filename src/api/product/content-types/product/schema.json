@@ -1,0 +1,74 @@
+{
+  "kind": "collectionType",
+  "collectionName": "products",
+  "info": {
+    "singularName": "product",
+    "pluralName": "products",
+    "displayName": "Product"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "name",
+      "required": true
+    },
+    "price": {
+      "type": "decimal",
+      "required": true
+    },
+    "category": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::category.category"
+    },
+    "images": {
+      "type": "media",
+      "multiple": true,
+      "allowedTypes": ["images"]
+    },
+    "description": {
+      "type": "blocks"
+    },
+    "badge": {
+      "type": "enumeration",
+      "enum": ["New", "BestSeller", "Limited", "Sale"]
+    },
+    "material": {
+      "type": "text"
+    },
+    "specifications": {
+      "type": "component",
+      "repeatable": true,
+      "component": "product.specification"
+    },
+    "inStock": {
+      "type": "boolean",
+      "default": true
+    },
+    "stockCount": {
+      "type": "integer"
+    },
+    "isLimitedEdition": {
+      "type": "boolean",
+      "default": false
+    },
+    "variants": {
+      "type": "component",
+      "repeatable": true,
+      "component": "product.variant"
+    },
+    "seoTitle": {
+      "type": "string"
+    },
+    "seoDescription": {
+      "type": "text"
+    }
+  }
+}

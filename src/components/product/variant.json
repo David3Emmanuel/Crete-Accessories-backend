@@ -1,0 +1,16 @@
+{
+  "collectionName": "components_product_variants",
+  "info": {
+    "displayName": "Variant",
+    "icon": "paint-brush"
+  },
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "colorHex": {
+      "type": "string"
+    }
+  }
+}
