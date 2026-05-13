@@ -1,0 +1,25 @@
+{
+  "collectionName": "components_user_saved_addresses",
+  "info": {
+    "displayName": "Saved Address",
+    "icon": "map-marker"
+  },
+  "attributes": {
+    "label": {
+      "type": "string",
+      "required": true
+    },
+    "address": {
+      "type": "string",
+      "required": true
+    },
+    "state": {
+      "type": "string",
+      "required": true
+    },
+    "city": {
+      "type": "string",
+      "required": true
+    }
+  }
+}

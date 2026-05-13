@@ -39,12 +39,27 @@ export interface ProductVariant extends Struct.ComponentSchema {
   };
 }
 
+export interface UserSavedAddress extends Struct.ComponentSchema {
+  collectionName: 'components_user_saved_addresses';
+  info: {
+    displayName: 'Saved Address';
+    icon: 'map-marker';
+  };
+  attributes: {
+    address: Schema.Attribute.String & Schema.Attribute.Required;
+    city: Schema.Attribute.String & Schema.Attribute.Required;
+    label: Schema.Attribute.String & Schema.Attribute.Required;
+    state: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
 declare module '@strapi/strapi' {
   export module Public {
     export interface ComponentSchemas {
       'order.delivery-address': OrderDeliveryAddress;
       'product.specification': ProductSpecification;
       'product.variant': ProductVariant;
+      'user.saved-address': UserSavedAddress;
     }
   }
 }
