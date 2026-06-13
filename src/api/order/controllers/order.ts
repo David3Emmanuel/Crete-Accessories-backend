@@ -34,12 +34,24 @@ export default factories.createCoreController(
         }
       }
 
-      ctx.query.filters = {
-        ...(ctx.query.filters as any),
-        user: { id: user.id },
-      };
+      // Query database directly to bypass REST query validation on relation fields
+      const orders = await strapi.db.query("api::order.order").findMany({
+        where: {
+          user: user.id,
+        },
+        populate: {
+          items: {
+            populate: {
+              product: {
+                populate: ["images"],
+              },
+            },
+          },
+        },
+        orderBy: { createdAt: "desc" },
+      });
 
-      return await super.find(ctx);
+      return this.transformResponse(orders);
     },
 
     async findOne(ctx) {
@@ -50,7 +62,16 @@ export default factories.createCoreController(
 
       const { id } = ctx.params;
       const order = await strapi.entityService.findOne("api::order.order", id, {
-        populate: ["user"],
+        populate: {
+          user: true,
+          items: {
+            populate: {
+              product: {
+                populate: ["images"],
+              },
+            },
+          },
+        },
       });
 
       if (!order) {
@@ -81,7 +102,7 @@ export default factories.createCoreController(
         return ctx.notFound();
       }
 
-      return await super.findOne(ctx);
+      return this.transformResponse(order);
     },
 
     async create(ctx) {
