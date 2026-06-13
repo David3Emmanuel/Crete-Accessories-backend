@@ -9,6 +9,31 @@ export default factories.createCoreController(
         return ctx.unauthorized("You must be logged in to view orders.");
       }
 
+      // Link any unlinked guest orders matching this user's email dynamically
+      if (user.email) {
+        try {
+          const unlinkedOrders = await strapi.db.query("api::order.order").findMany({
+            where: {
+              guestEmail: user.email,
+              user: { id: { $null: true } },
+            },
+          });
+
+          for (const order of unlinkedOrders) {
+            await strapi.db.query("api::order.order").update({
+              where: { id: order.id },
+              data: {
+                user: user.id,
+                guestEmail: null,
+              },
+            });
+            strapi.log.info(`Linked guest order ${order.orderNumber} to user ${user.email} on search`);
+          }
+        } catch (err: any) {
+          strapi.log.error(`Failed to dynamically link guest orders on search: ${err.message}`);
+        }
+      }
+
       ctx.query.filters = {
         ...(ctx.query.filters as any),
         user: { id: user.id },
@@ -28,7 +53,31 @@ export default factories.createCoreController(
         populate: ["user"],
       });
 
-      if (!order || ((order as any).user && (order as any).user.id !== user.id)) {
+      if (!order) {
+        return ctx.notFound();
+      }
+
+      // If order is a guest order, check if we can link it dynamically
+      if (!(order as any).user) {
+        if ((order as any).guestEmail === user.email) {
+          try {
+            await strapi.db.query("api::order.order").update({
+              where: { id: order.id },
+              data: {
+                user: user.id,
+                guestEmail: null,
+              },
+            });
+            strapi.log.info(`Linked guest order ${order.orderNumber} to user ${user.email} on details fetch`);
+          } catch (err: any) {
+            strapi.log.error(`Failed to dynamically link guest order on details fetch: ${err.message}`);
+          }
+        } else {
+          // Guest order but email does not match logged in user
+          return ctx.notFound();
+        }
+      } else if ((order as any).user.id !== user.id) {
+        // Linked to a different user
         return ctx.notFound();
       }
 

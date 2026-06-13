@@ -62,6 +62,37 @@ export default {
         }
       }
       console.log('RBAC permissions successfully synced and automated.');
+
+      // Subscribe to User lifecycles to link existing guest orders with the same email
+      strapi.db.lifecycles.subscribe({
+        models: ['plugin::users-permissions.user'],
+        async afterCreate(event) {
+          const { result } = event;
+          if (result && result.email) {
+            try {
+              const orders = await strapi.db.query('api::order.order').findMany({
+                where: {
+                  guestEmail: result.email,
+                  user: { id: { $null: true } },
+                },
+              });
+
+              for (const order of orders) {
+                await strapi.db.query('api::order.order').update({
+                  where: { id: order.id },
+                  data: {
+                    user: result.id,
+                    guestEmail: null,
+                  },
+                });
+                strapi.log.info(`Linked guest order ${order.orderNumber} to new user account ${result.email}`);
+              }
+            } catch (err: any) {
+              strapi.log.error(`Failed to link guest orders on user creation: ${err.message}`);
+            }
+          }
+        },
+      });
     } catch (err) {
       console.error('Failed to bootstrap RBAC permissions:', err);
     }
