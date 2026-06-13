@@ -28,7 +28,7 @@ export default factories.createCoreController(
         populate: ["user"],
       });
 
-      if (!order || (order.user && (order.user as any).id !== user.id)) {
+      if (!order || ((order as any).user && (order as any).user.id !== user.id)) {
         return ctx.notFound();
       }
 
