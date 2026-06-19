@@ -21,11 +21,48 @@ export default {
         'api::order.order.find',
         'api::order.order.findOne',
       ],
+      admin: [
+        'api::category.category.find',
+        'api::category.category.findOne',
+        'api::category.category.create',
+        'api::category.category.update',
+        'api::category.category.delete',
+        'api::product.product.find',
+        'api::product.product.findOne',
+        'api::product.product.create',
+        'api::product.product.update',
+        'api::product.product.delete',
+        'api::order.order.find',
+        'api::order.order.findOne',
+        'api::order.order.create',
+        'api::order.order.update',
+        'api::order.order.delete',
+        'api::order-item.order-item.find',
+        'api::order-item.order-item.findOne',
+        'api::order-item.order-item.create',
+        'api::order-item.order-item.update',
+        'api::order-item.order-item.delete',
+      ],
     };
 
     try {
       const roleQuery = strapi.db.query('plugin::users-permissions.role');
       const permissionQuery = strapi.db.query('plugin::users-permissions.permission');
+
+      // Ensure all target roles exist in the database
+      for (const roleType of Object.keys(rolePermissions)) {
+        const existingRole = await roleQuery.findOne({ where: { type: roleType } });
+        if (!existingRole) {
+          await roleQuery.create({
+            data: {
+              name: roleType.charAt(0).toUpperCase() + roleType.slice(1),
+              description: `Default role for ${roleType} users`,
+              type: roleType,
+            },
+          });
+          console.log(`Created role: ${roleType}`);
+        }
+      }
 
       // Fetch target roles
       const roles = await roleQuery.findMany({
