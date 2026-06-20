@@ -4,51 +4,46 @@ export default {
   register(/* { strapi }: { strapi: Core.Strapi } */) {},
 
   async bootstrap({ strapi }) {
+    const publicPermissions = [
+      'api::category.category.find',
+      'api::category.category.findOne',
+      'api::product.product.find',
+      'api::product.product.findOne',
+      'api::order.order.create',
+    ];
+
+    const authenticatedPermissions = [
+      ...publicPermissions,
+      'api::order.order.find',
+      'api::order.order.findOne',
+      'plugin::users-permissions.user.me',
+    ];
+
+    const adminPermissions = [
+      ...authenticatedPermissions,
+      'api::category.category.create',
+      'api::category.category.update',
+      'api::category.category.delete',
+      'api::product.product.create',
+      'api::product.product.update',
+      'api::product.product.delete',
+      'api::order.order.update',
+      'api::order.order.delete',
+      'api::order-item.order-item.find',
+      'api::order-item.order-item.findOne',
+      'api::order-item.order-item.create',
+      'api::order-item.order-item.update',
+      'api::order-item.order-item.delete',
+      'plugin::upload.content-api.upload',
+      'plugin::upload.content-api.find',
+      'plugin::upload.content-api.findOne',
+      'plugin::upload.content-api.destroy',
+    ];
+
     const rolePermissions = {
-      public: [
-        'api::category.category.find',
-        'api::category.category.findOne',
-        'api::product.product.find',
-        'api::product.product.findOne',
-        'api::order.order.create',
-      ],
-      authenticated: [
-        'api::category.category.find',
-        'api::category.category.findOne',
-        'api::product.product.find',
-        'api::product.product.findOne',
-        'api::order.order.create',
-        'api::order.order.find',
-        'api::order.order.findOne',
-        'plugin::users-permissions.user.me',
-      ],
-      admin: [
-        'api::category.category.find',
-        'api::category.category.findOne',
-        'api::category.category.create',
-        'api::category.category.update',
-        'api::category.category.delete',
-        'api::product.product.find',
-        'api::product.product.findOne',
-        'api::product.product.create',
-        'api::product.product.update',
-        'api::product.product.delete',
-        'api::order.order.find',
-        'api::order.order.findOne',
-        'api::order.order.create',
-        'api::order.order.update',
-        'api::order.order.delete',
-        'api::order-item.order-item.find',
-        'api::order-item.order-item.findOne',
-        'api::order-item.order-item.create',
-        'api::order-item.order-item.update',
-        'api::order-item.order-item.delete',
-        'plugin::users-permissions.user.me',
-        'plugin::upload.content-api.upload',
-        'plugin::upload.content-api.find',
-        'plugin::upload.content-api.findOne',
-        'plugin::upload.content-api.destroy',
-      ],
+      public: publicPermissions,
+      authenticated: authenticatedPermissions,
+      admin: adminPermissions,
     };
 
     try {
