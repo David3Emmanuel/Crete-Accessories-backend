@@ -20,6 +20,7 @@ export default {
         'api::order.order.create',
         'api::order.order.find',
         'api::order.order.findOne',
+        'plugin::users-permissions.user.me',
       ],
       admin: [
         'api::category.category.find',
@@ -42,6 +43,11 @@ export default {
         'api::order-item.order-item.create',
         'api::order-item.order-item.update',
         'api::order-item.order-item.delete',
+        'plugin::users-permissions.user.me',
+        'plugin::upload.content-api.upload',
+        'plugin::upload.content-api.find',
+        'plugin::upload.content-api.findOne',
+        'plugin::upload.content-api.destroy',
       ],
     };
 
